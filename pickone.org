@@ -1,0 +1,46 @@
+#+PROPERTY: header-args :tangle yes
+
+We import the necessary modules.
+#+begin_src python
+import csv
+import random
+#+end_src
+
+The following function returns updated scores.
+#+begin_src python
+  def updateScores(choices, choice):
+      with open("namesdb.csv", 'w') as file:
+          csvwriter = csv.DictWriter(file, fieldnames=['Name','Score'])
+          for i in range(0, len(choices)):
+              if i == choice:
+                  choices[i]['Score'] = int(choices[i]['Score']) + 1
+              else:
+                  choices[i]['Score'] = int(choices[i]['Score']) - 1
+              csvwriter.writerow(choices[i])
+#+end_src
+
+The main function that generates two random choices, asks for a preference, and calls updateScore.
+#+begin_src python
+  def askAndUpdate():
+    with open("namesdb.csv", 'r') as file:
+        csvreader = csv.DictReader(file,fieldnames=['Name','Score'])
+        lst = list(csvreader)
+    choice1 = random.choice(lst)
+    choice2 = random.choice(lst)
+    choice = int(input("1. " + choice1['Name'] +"  2. " + choice2['Name'] +" : "))
+    if choice == 0:
+      return False
+
+    updateScores([choice1, choice2], choice-1)
+
+    return True
+#+end_src
+
+The main repl:
+#+begin_src python
+  while askAndUpdate():
+      print("-----------------------------")
+#+end_src
+
+#+RESULTS:
+: None
